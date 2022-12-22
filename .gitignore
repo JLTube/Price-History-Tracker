@@ -1,3 +1,13 @@
+## User ignore files
+.PriceTracker/
+credentials.json
+amazon-price-tracker-370413-14110a865f22.json
+chromedriver.exe
+quickstart.py
+test.py
+
+
+## Below are git Templates
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
