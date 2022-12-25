@@ -62,12 +62,15 @@ def Amazon_IN(URL):
     if InStock is not None:
 
         AmazonIN_Product_Price = (soup.find("span", "a-offscreen").get_text()).strip()
-        AmazonIN_Delivery_Charge = (soup.find(id="deliveryBlockMessage").get_text()).strip()
+        AmazonIN_Delivery_Charge_RAW = (soup.find(id="deliveryBlockMessage").get_text()).strip()
 
         AmazonIN_Product_Price = AmazonIN_Product_Price[1:]
-        AmazonIN_Delivery_Charge = AmazonIN_Delivery_Charge[0:4]
+        AmazonIN_Delivery_Charge = AmazonIN_Delivery_Charge_RAW[0:4]
         if AmazonIN_Delivery_Charge == 'FREE':
             AmazonIN_Delivery_Charge = 0
+        else:
+            AmazonIN_Delivery_Charge = AmazonIN_Delivery_Charge_RAW[1:].split()
+            AmazonIN_Delivery_Charge = AmazonIN_Delivery_Charge[0]
 
         return AmazonIN_Product_Price, AmazonIN_Delivery_Charge
     else:
@@ -107,16 +110,12 @@ def main():
     AmazonIN_product_code = Get_Product_Code_Gsheet()
 
     # AmazonIN_product_code = {
-    #     'B09ZSNRX3B': 'Garmin Vivosmart 5 Large, Black',
-    #     'B08N1C1GKJ': 'Garmin Venu SQ Grey',
-    #     'B07HYX9P88': 'Garmin Instinct',
-    #     'B08GLHDVJF': 'Garmin Instinct Solar',
-    #     'B09TFNYB7M': 'Garmin Instinct 2',
-    #     'B09TFNBRNF': 'Garmin Instinct 2 Solar'
+    #     'B07JMMM6F5': 'Chips'
     # }
 
     for code in AmazonIN_product_code:
         AmazonIN_Product_Price, AmazonIN_Delivery_Charge = Amazon_IN(AmazonIN_URL+code)
+        # print(AmazonIN_Product_Price, AmazonIN_Delivery_Charge)
         time.sleep(10)
         if AmazonIN_Product_Price != 'NA':
             final_out = AddtoGoogleSheet(AmazonIN_URL+code, AmazonIN_product_code[code], AmazonIN_Product_Price, AmazonIN_Delivery_Charge)
